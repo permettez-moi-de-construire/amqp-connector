@@ -12,7 +12,15 @@ class AmqpUnreadyError extends AmqpConnectorBaseError {
   }
 }
 
+class AmqpUnexpectedReplyToError extends AmqpConnectorBaseError {
+  constructor (msg) {
+    super(msg || 'No replyTo in message properties')
+    this.name = 'AmqpUnexpectedReplyToError'
+  }
+}
+
 module.exports = {
   AmqpConnectorBaseError,
-  AmqpUnreadyError
+  AmqpUnreadyError,
+  AmqpUnexpectedReplyToError
 }

@@ -1,7 +1,15 @@
 const { ConfirmChannel } = require('amqplib/lib/channel_model')
 const Buffer = require('buffer').Buffer
 
-const { AmqpUnreadyError } = require('./errors')
+const {
+  AmqpUnreadyError,
+  AmqpUnexpectedReplyToError
+} = require('./errors')
+
+const defaultOptions = {
+  durable: true,
+  defaultPersistentMessages: true
+}
 
 class AmqpQueue {
   constructor (amqp, name, options) {
@@ -9,8 +17,7 @@ class AmqpQueue {
     this.name = name
 
     this.options = {
-      durable: true,
-      defaultPersistentMessages: true,
+      ...defaultOptions,
       ...options
     }
   }
@@ -82,6 +89,66 @@ class AmqpQueue {
         content: evtContentObj
       })
     }, options)
+  }
+
+  _getReplyQueue (originMessage, queueOptions) {
+    this._checkChannel()
+
+    const { replyTo } = originMessage.properties
+
+    if (!replyTo) {
+      throw new AmqpUnexpectedReplyToError()
+    }
+
+    const replyQueueOptions = {
+      ...defaultOptions,
+      ...queueOptions
+    }
+
+    const replyQueue = new AmqpQueue(
+      this.amqp,
+      replyTo,
+      replyQueueOptions
+    )
+
+    return replyQueue
+  }
+
+  _getReply (replyFn) {
+    return async function (originMessage, data, queueOptions, msgOptions) {
+      const { correlationId } = originMessage.properties
+
+      return replyFn(data, {
+        correlationId,
+        ...msgOptions
+      })
+    }
+  }
+
+  async reply (originMessage, data, queueOptions, msgOptions) {
+    const replyQueue = this._getReplyQueue(originMessage, queueOptions)
+
+    const _reply = this._getReply(replyQueue.send)
+
+    return _reply(
+      originMessage,
+      data,
+      queueOptions,
+      msgOptions
+    )
+  }
+
+  async replyJson (originMessage, data, queueOptions, msgOptions) {
+    const replyQueue = this._getReplyQueue(originMessage, queueOptions)
+
+    const _reply = this._getReply(replyQueue.sendJson)
+
+    return _reply(
+      originMessage,
+      data,
+      queueOptions,
+      msgOptions
+    )
   }
 
   async ack (event) {
