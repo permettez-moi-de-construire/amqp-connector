@@ -60,7 +60,7 @@ describe('Amqp', () => {
       const exchange = amqp.defineExchange('TestExchange', { exchangeName: 'test-exchange' })
       assert.strictEqual(exchange.name, 'test-exchange')
     })
-  
+
     it('should default to passed exchange name', () => {
       const amqp = new Amqp('amqp://root:root@localhost:5672')
       const exchange = amqp.defineExchange('test-exchange')

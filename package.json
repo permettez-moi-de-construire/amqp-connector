@@ -8,7 +8,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha \"test/**/*.test.js\""
+    "test": "mocha \"test/**/*.test.js\"",
+    "hint": "standard --verbose | snazzy",
+    "prepublishOnly": "npm run hint && npm run test"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +19,8 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "snazzy": "^8.0.0",
+    "standard": "^12.0.1"
   }
 }
