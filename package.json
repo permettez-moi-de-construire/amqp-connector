@@ -1,6 +1,6 @@
 {
   "name": "@permettezmoideconstruire/amqp-connector",
-  "version": "1.0.0",
+  "version": "1.1.0-0",
   "description": "Thin wrapper around amqplib",
   "main": "index.js",
   "engines": {
