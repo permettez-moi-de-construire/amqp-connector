@@ -29,4 +29,20 @@ describe('AmqpQueue', () => {
       assert.doesNotThrow(queue._checkName.bind(queue))
     })
   })
+
+  describe('assert', () => {
+    it('should pass', async () => {
+      const queue = new AmqpQueue({ channel: {
+        assertQueue: async () => ({
+          queue: 'my-queue'
+        })
+      } }, 'my-queue')
+      await queue.assert()
+    })
+
+    it('should throw AmqpUnreadyError', async () => {
+      const queue = new AmqpQueue(null, 'my-queue')
+      await assert.isRejected(queue.assert())
+    })
+  })
 })
