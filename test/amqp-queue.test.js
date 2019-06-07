@@ -40,9 +40,24 @@ describe('AmqpQueue', () => {
       await queue.assert()
     })
 
-    it('should throw AmqpUnreadyError', async () => {
-      const queue = new AmqpQueue(null, 'my-queue')
-      await assert.isRejected(queue.assert())
+    it('should pass without queue name', async () => {
+      const queue = new AmqpQueue({ channel: {
+        assertQueue: async () => ({
+          queue: 'my-queue'
+        })
+      } })
+      await queue.assert()
+    })
+
+    it('should fill name', async () => {
+      const queue = new AmqpQueue({ channel: {
+        assertQueue: async () => ({
+          queue: 'my-queue'
+        })
+      } }, null)
+      await queue.assert()
+      assert.ok(queue.name)
+      assert.strictEqual(queue.name, 'my-queue')
     })
   })
 })
