@@ -128,7 +128,7 @@ class AmqpQueue {
   async reply (originMessage, data, queueOptions, msgOptions) {
     const replyQueue = this._getReplyQueue(originMessage, queueOptions)
 
-    const _reply = this._getReply(replyQueue.send)
+    const _reply = this._getReply(replyQueue.send.bind(replyQueue))
 
     return _reply(
       originMessage,
@@ -141,7 +141,7 @@ class AmqpQueue {
   async replyJson (originMessage, data, queueOptions, msgOptions) {
     const replyQueue = this._getReplyQueue(originMessage, queueOptions)
 
-    const _reply = this._getReply(replyQueue.sendJson)
+    const _reply = this._getReply(replyQueue.sendJson.bind(replyQueue))
 
     return _reply(
       originMessage,
