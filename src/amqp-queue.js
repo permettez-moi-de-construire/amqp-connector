@@ -2,6 +2,7 @@ const { ConfirmChannel } = require('amqplib/lib/channel_model')
 const Buffer = require('buffer').Buffer
 
 const {
+  AmqpConnectorBaseError,
   AmqpUnreadyError,
   AmqpUnexpectedReplyToError
 } = require('./errors')
@@ -12,14 +13,22 @@ const defaultOptions = {
 }
 
 class AmqpQueue {
-  constructor (amqp, name, options) {
+  constructor (amqp, name, userOptions) {
     this.amqp = amqp
-    this.name = name
+    this.name = name || null
 
-    this.options = {
+    const options = {
       ...defaultOptions,
-      ...options
+      ...userOptions
     }
+
+    const {
+      defaultPersistentMessages,
+      ...queueOptions
+    } = options
+
+    this.defaultPersistentMessages = !!defaultPersistentMessages
+    this.queueOptions = queueOptions
   }
 
   _checkChannel () {
@@ -28,27 +37,39 @@ class AmqpQueue {
     }
   }
 
+  _checkName () {
+    if (!this.name) {
+      throw new AmqpConnectorBaseError('Queue have no name. It should be either set manually, or filled when `assert()`ing the queue')
+    }
+  }
+
   async assert () {
     this._checkChannel()
 
-    return this.amqp.channel.assertQueue(this.name, {
-      durable: this.options.durable
+    const res = await this.amqp.channel.assertQueue(this.name, {
+      ...this.queueOptions
     })
+
+    this.name = res.queue
+
+    return res
   }
 
   async delete () {
     this._checkChannel()
+    this._checkName()
 
     return this.amqp.channel.deleteQueue(this.name)
   }
 
   async send (data, options) {
     this._checkChannel()
+    this._checkName()
 
     const sendAsPromise = (this.amqp.channel instanceof ConfirmChannel)
       ? new Promise((resolve, reject) => {
         this.amqp.channel.sendToQueue(this.name, data, {
-          persistent: this.options.defaultPersistentMessages,
+          persistent: this.defaultPersistentMessages,
           ...options
         }, (err, ok) => {
           if (err) {
@@ -58,7 +79,7 @@ class AmqpQueue {
         })
       })
       : this.amqp.channel.sendToQueue(this.name, data, {
-        persistent: this.options.defaultPersistentMessages,
+        persistent: this.defaultPersistentMessages,
         ...options
       })
 
@@ -72,12 +93,14 @@ class AmqpQueue {
 
   consume (callback, options) {
     this._checkChannel()
+    this._checkName()
 
     return this.amqp.channel.consume(this.name, callback, options)
   }
 
   consumeJson (callback, options) {
     this._checkChannel()
+    this._checkName()
 
     return this.amqp.channel.consume(this.name, evtBuf => {
       const evtContentString = evtBuf.content.toString()
