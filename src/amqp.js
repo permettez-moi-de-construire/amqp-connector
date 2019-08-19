@@ -75,6 +75,7 @@ class Amqp {
 
     return this.channel.ack(event)
   }
+
   async nack (event, requeue) {
     this._checkChannel()
 
