@@ -4,7 +4,8 @@
   "description": "Thin wrapper around amqplib",
   "main": "src/index.js",
   "engines": {
-    "node": ">=v11.10.1"
+    "node": "^12.16.1",
+    "yarn": "^1.22.4"
   },
   "scripts": {
     "test": "mocha test/index.js \"test/**/*.test.js\"",
