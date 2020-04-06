@@ -9,18 +9,21 @@
   },
   "scripts": {
     "test": "mocha test/index.js \"test/**/*.test.js\"",
-    "hint": "standard --verbose | snazzy",
+    "hint": "ts-standard --verbose | snazzy",
     "prepublishOnly": "npm run hint && npm run test"
   },
   "dependencies": {
     "amqplib": "^0.5.5"
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^2.27.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^6.8.0",
     "mocha": "^7.1.1",
     "snazzy": "^8.0.0",
-    "standard": "^14.3.3"
+    "ts-standard": "^7.0.0",
+    "typescript": "^3.8.3"
   },
   "repository": "git+https://github.com/permettez-moi-de-construire/amqp-connector.git",
   "keywords": [
