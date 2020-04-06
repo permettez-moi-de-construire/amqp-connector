@@ -32,29 +32,35 @@ describe('AmqpQueue', () => {
 
   describe('assert', () => {
     it('should pass', async () => {
-      const queue = new AmqpQueue({ channel: {
-        assertQueue: async () => ({
-          queue: 'my-queue'
-        })
-      } }, 'my-queue')
+      const queue = new AmqpQueue({
+        channel: {
+          assertQueue: async () => ({
+            queue: 'my-queue'
+          })
+        }
+      }, 'my-queue')
       await queue.assert()
     })
 
     it('should pass without queue name', async () => {
-      const queue = new AmqpQueue({ channel: {
-        assertQueue: async () => ({
-          queue: 'my-queue'
-        })
-      } })
+      const queue = new AmqpQueue({
+        channel: {
+          assertQueue: async () => ({
+            queue: 'my-queue'
+          })
+        }
+      })
       await queue.assert()
     })
 
     it('should fill name', async () => {
-      const queue = new AmqpQueue({ channel: {
-        assertQueue: async () => ({
-          queue: 'my-queue'
-        })
-      } }, null)
+      const queue = new AmqpQueue({
+        channel: {
+          assertQueue: async () => ({
+            queue: 'my-queue'
+          })
+        }
+      }, null)
       await queue.assert()
       assert.ok(queue.name)
       assert.strictEqual(queue.name, 'my-queue')
