@@ -21,10 +21,7 @@
     "snazzy": "^8.0.0",
     "standard": "^13.1.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/permettez-moi-de-construire/amqp-connector.git"
-  },
+  "repository": "git+https://github.com/permettez-moi-de-construire/amqp-connector.git",
   "keywords": [
     "amqp",
     "rabbitmq",
