@@ -30,11 +30,6 @@
     "standard"
   ],
   "author": "Cyril CHAPON",
-  "maintainers": [
-    {
-      "name": "Antoine POUS"
-    }
-  ],
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/permettez-moi-de-construire/amqp-connector/issues"
