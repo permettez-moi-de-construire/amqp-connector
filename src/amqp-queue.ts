@@ -63,25 +63,25 @@ class AmqpQueue {
     return { persistent }
   }
 
-  _checkChannel () {
-    if (!this.amqp.channel) {
-      throw new AmqpUnreadyError()
-    }
+  _getChannel(): Channel {
+    const channel = Amqp.safeChannel(this.amqp.channel)
+
+    return channel
   }
 
   async assert (): Promise<Replies.AssertQueue> {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.amqp.channel as Channel).assertQueue(
+    return channel.assertQueue(
       this.name,
       this._getAssertOptions()
     )
   }
 
   async delete (options?: Options.DeleteQueue) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.amqp.channel as Channel).deleteQueue(
+    return channel.deleteQueue(
       this.name,
       options
     )
@@ -111,10 +111,10 @@ class AmqpQueue {
   }
 
   async send (data: Buffer, options?: Options.Publish) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
     return AmqpQueue._sendAsPromise(
-      (this.amqp.channel as Channel),
+      channel,
       this.name,
       data,
       {
@@ -130,7 +130,7 @@ class AmqpQueue {
   }
 
   consume (callback: OnMessageCallback, options: Options.Consume): Promise<Replies.Consume> {
-    this._checkChannel()
+    const channel = this._getChannel()
 
     const safeCallback = (msg: ConsumeMessage | null) => {
       if (!msg) {
@@ -140,7 +140,7 @@ class AmqpQueue {
       callback.call(this.amqp.channel, msg)
     }
 
-    return (this.amqp.channel as Channel).consume(
+    return channel.consume(
       this.name,
       safeCallback,
       options
@@ -148,13 +148,13 @@ class AmqpQueue {
   }
 
   consumeJson (callback: OnJsonMessageCallback, options: Options.Consume) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
     const jsonCallback = (msg: ConsumeMessage) => {
       const contentString = msg.content.toString()
       const contentObj = JSON.parse(contentString)
 
-      callback.call(this.amqp.channel, {
+      callback.call(channel, {
         ...msg,
         content: contentObj
       })
@@ -212,15 +212,15 @@ class AmqpQueue {
   }
 
   async ack (...args: Parameters<Channel['ack']>) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.amqp.channel as Channel).ack(...args)
+    return channel.ack(...args)
   }
 
   async nack (...args: Parameters<Channel['nack']>) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.amqp.channel as Channel).nack(...args)
+    return channel.nack(...args)
   }
 }
 

@@ -62,16 +62,16 @@ class AmqpExchange {
     return { persistent }
   }
 
-  _checkChannel () {
-    if (!this.amqp.channel) {
-      throw new AmqpUnreadyError()
-    }
+  _getChannel(): Channel {
+    const channel = Amqp.safeChannel(this.amqp.channel)
+
+    return channel
   }
 
   async assert () {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.amqp.channel as Channel).assertExchange(
+    return channel.assertExchange(
       this.name,
       this.type,
       this._getAssertOptions()
@@ -79,9 +79,9 @@ class AmqpExchange {
   }
 
   async bindQueue (amqpQueue: AmqpQueue, bindingKey: string, options?: any) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    await (this.amqp.channel as Channel).bindQueue(
+    await channel.bindQueue(
       amqpQueue.name,
       this.name,
       bindingKey,
@@ -114,10 +114,10 @@ class AmqpExchange {
   }
 
   async send (routingKey: string, data: Buffer, options?: Options.Publish) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
     return AmqpExchange._sendAsPromise(
-      (this.amqp.channel as Channel),
+      channel,
       this.name,
       routingKey,
       data,

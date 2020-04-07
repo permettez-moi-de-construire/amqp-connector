@@ -40,6 +40,20 @@ class Amqp {
     }
   }
 
+  static safeChannel (channel?: Channel | null): Channel {
+    if (!channel) {
+      throw new AmqpUnreadyError()
+    }
+
+    return channel
+  }
+
+  _getChannel(): Channel {
+    const channel = Amqp.safeChannel(this.channel)
+
+    return channel
+  }
+
   async connect (...args: Parameters<typeof connect>) {
     this.connection = await connect(...args)
 
@@ -88,22 +102,16 @@ class Amqp {
     return this.queues[name]
   }
 
-  _checkChannel () {
-    if (!this.channel) {
-      throw new AmqpUnreadyError()
-    }
-  }
-
   async ack (...args: Parameters<Channel['ack']>) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.channel as Channel).ack(...args)
+    return channel.ack(...args)
   }
 
   async nack (...args: Parameters<Channel['nack']>) {
-    this._checkChannel()
+    const channel = this._getChannel()
 
-    return (this.channel as Channel).nack(...args)
+    return channel.nack(...args)
   }
 
   static isConfirm (channel: Channel) : channel is ConfirmChannel {
