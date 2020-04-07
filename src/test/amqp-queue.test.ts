@@ -2,8 +2,8 @@ import { describe, it, beforeEach } from 'mocha'
 import { assert } from 'chai'
 import Bluebird from 'bluebird'
 
-import AmqpQueue from '../src/amqp-queue'
-import Amqp from '../src/amqp'
+import AmqpQueue from '../amqp-queue'
+import Amqp from '../amqp'
 import { Replies, Channel } from 'amqplib'
 
 describe('AmqpQueue', () => {
