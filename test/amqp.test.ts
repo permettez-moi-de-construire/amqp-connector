@@ -1,20 +1,20 @@
-const { describe, it } = require('mocha')
-const { assert } = require('chai')
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
 
-const Amqp = require('../src/amqp')
-const AmqpQueue = require('../src/amqp-queue')
-const AmqpExchange = require('../src/amqp-exchange')
+import Amqp from '../src/amqp'
+import AmqpQueue from '../src/amqp-queue'
+import AmqpExchange from '../src/amqp-exchange'
 
 describe('Amqp', () => {
   describe('defineQueue', () => {
     it('should return an AmqpQueue', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const queue = amqp.defineQueue('TestQueue', { queueName: 'test-queue' })
       assert.instanceOf(queue, AmqpQueue)
     })
 
     it('should register the queue inside connector', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const definedQueueName = 'TestQueue'
       const queue = amqp.defineQueue(definedQueueName, { queueName: 'test-queue' })
 
@@ -25,13 +25,13 @@ describe('Amqp', () => {
     })
 
     it('should respect queueName', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const queue = amqp.defineQueue('TestQueue', { queueName: 'test-queue' })
       assert.strictEqual(queue.name, 'test-queue')
     })
 
     it('should default to passed queue name', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const queue = amqp.defineQueue('test-queue')
       assert.strictEqual(queue.name, 'test-queue')
     })
@@ -39,13 +39,13 @@ describe('Amqp', () => {
 
   describe('defineExchange', () => {
     it('should return an AmqpExchange', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const exchange = amqp.defineExchange('TestExchange', { exchangeName: 'test-exchange' })
       assert.instanceOf(exchange, AmqpExchange)
     })
 
     it('should register the exchange inside connector', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const definedExchangeName = 'TestExchange'
       const exchange = amqp.defineExchange(definedExchangeName, { exchangeName: 'test-exchange' })
 
@@ -56,13 +56,13 @@ describe('Amqp', () => {
     })
 
     it('should respect exchangeName', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const exchange = amqp.defineExchange('TestExchange', { exchangeName: 'test-exchange' })
       assert.strictEqual(exchange.name, 'test-exchange')
     })
 
     it('should default to passed exchange name', () => {
-      const amqp = new Amqp('amqp://root:root@localhost:5672')
+      const amqp = new Amqp()
       const exchange = amqp.defineExchange('test-exchange')
       assert.strictEqual(exchange.name, 'test-exchange')
     })
