@@ -21,7 +21,6 @@
     "@types/chai-as-promised": "^7.1.2",
     "@types/mocha": "^7.0.2",
     "@typescript-eslint/parser": "^2.27.0",
-    "bluebird": "^3.7.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^6.8.0",
