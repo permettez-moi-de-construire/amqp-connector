@@ -12,7 +12,8 @@
     "build": "tsc",
     "test": "mocha -r ts-node/register test/index.ts \"test/**/*.test.ts\"",
     "hint": "ts-standard --verbose | snazzy",
-    "prepublishOnly": "npm run hint && npm run test"
+    "prepublishOnly": "yarn test && yarn build",
+    "_prepublishOnly": "yarn hint && yarn test && yarn build"
   },
   "dependencies": {
     "amqplib": "^0.5.5"
