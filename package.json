@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register test/index.ts \"test/**/*.test.ts\"",
+    "test": "mocha -r ts-node/register src/test/index.ts \"src/test/**/*.test.ts\"",
     "hint": "ts-standard --verbose | snazzy",
     "prepublishOnly": "yarn test && yarn build",
     "_prepublishOnly": "yarn hint && yarn test && yarn build"
