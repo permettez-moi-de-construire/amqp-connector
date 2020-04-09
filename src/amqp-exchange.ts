@@ -1,5 +1,4 @@
 import {
-  ConfirmChannel,
   Channel,
   Options,
   Replies
@@ -7,8 +6,6 @@ import {
 import { Amqp } from './amqp'
 import { AmqpQueue } from './amqp-queue'
 import { Buffer } from 'buffer'
-
-import { AmqpUnreadyError } from './errors'
 
 type AmqpExchangeType = 'direct' | 'topic' | 'headers' | 'fanout'
 
@@ -34,10 +31,14 @@ class AmqpExchange {
   readonly type: AmqpExchangeType
   readonly options: _AmqpExchangeOptions
 
-  constructor (amqp: Amqp, name: string, options?: AmqpExchangeOptions) {
+  constructor (
+    amqp: Amqp,
+    name: string,
+    options?: AmqpExchangeOptions
+  ) {
     this.amqp = amqp
     this.name = name
-    this.type = (options && options.type) || defaultType
+    this.type = options?.type ?? defaultType
 
     this.options = {
       ...defaultOptions,
@@ -45,7 +46,7 @@ class AmqpExchange {
     }
   }
 
-  _getAssertOptions(): Options.AssertExchange {
+  _getAssertOptions (): Options.AssertExchange {
     const {
       defaultPersistentMessages,
       ...assertOptions
@@ -54,7 +55,7 @@ class AmqpExchange {
     return assertOptions
   }
 
-  _getPublishOptions(): Options.Publish {
+  _getPublishOptions (): Options.Publish {
     const {
       defaultPersistentMessages: persistent
     } = this.options
@@ -62,26 +63,30 @@ class AmqpExchange {
     return { persistent }
   }
 
-  _getChannel(): Channel {
+  _getChannel (): Channel {
     const channel = Amqp.safeChannel(this.amqp.channel)
 
     return channel
   }
 
-  async assert () {
+  async assert (): Promise<Replies.AssertExchange> {
     const channel = this._getChannel()
 
-    return channel.assertExchange(
+    return await channel.assertExchange(
       this.name,
       this.type,
       this._getAssertOptions()
     )
   }
 
-  async bindQueue (amqpQueue: AmqpQueue, bindingKey: string, options?: any) {
+  async bindQueue (
+    amqpQueue: AmqpQueue,
+    bindingKey: string,
+    options?: any
+  ): Promise<Replies.Empty> {
     const channel = this._getChannel()
 
-    await channel.bindQueue(
+    return await channel.bindQueue(
       amqpQueue.name,
       this.name,
       bindingKey,
@@ -95,28 +100,32 @@ class AmqpExchange {
     routingKey: string,
     data: Buffer,
     options: Options.Publish
-  ) : Promise<Replies.Empty> {
+  ): Promise<Replies.Empty> {
     return Amqp.isConfirm(channel)
-      ? new Promise((resolve, reject) => {
+      ? await new Promise((resolve, reject) => {
         channel.publish(exchangeName, routingKey, data, options,
           (err, ok) => {
-            if (err) {
+            if (err == null) {
               return reject(err)
             }
             resolve(ok)
           }
         )
       })
-      : new Promise((resolve) => {
+      : await new Promise((resolve) => {
         channel.publish(exchangeName, routingKey, data, options)
         resolve({})
       })
   }
 
-  async send (routingKey: string, data: Buffer, options?: Options.Publish) {
+  async send (
+    routingKey: string,
+    data: Buffer,
+    options?: Options.Publish
+  ): Promise<Replies.Empty> {
     const channel = this._getChannel()
 
-    return AmqpExchange._sendAsPromise(
+    return await AmqpExchange._sendAsPromise(
       channel,
       this.name,
       routingKey,
@@ -128,9 +137,18 @@ class AmqpExchange {
     )
   }
 
-  async sendJson (routingKey: string, data: object, options?: Options.Publish) {
+  async sendJson (
+    routingKey: string,
+    data: object,
+    options?: Options.Publish
+  ): Promise<Replies.Empty> {
     const formattedData = Buffer.from(JSON.stringify(data))
-    return this.send(routingKey, formattedData, options)
+
+    return await this.send(
+      routingKey,
+      formattedData,
+      options
+    )
   }
 }
 
