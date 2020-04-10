@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import Amqp from '../amqp'
-import AmqpQueue from '../amqp-queue'
-import AmqpExchange from '../amqp-exchange'
+import Amqp from '../src/amqp'
+import AmqpQueue from '../src/amqp-queue'
+import AmqpExchange from '../src/amqp-exchange'
 
 describe('Amqp', () => {
   describe('defineQueue', () => {

@@ -1,17 +1,12 @@
-import { describe, it, beforeEach } from 'mocha'
-import { assert } from 'chai'
+import { describe, it } from 'mocha'
+// import { assert } from 'chai'
 import Bluebird from 'bluebird'
 
-import AmqpQueue from '../amqp-queue'
-import Amqp from '../amqp'
+import AmqpQueue from '../src/amqp-queue'
+import Amqp from '../src/amqp'
 import { Replies, Channel } from 'amqplib'
 
 describe('AmqpQueue', () => {
-  let amqp: Amqp
-  beforeEach(() => {
-    amqp = new Amqp()
-  })
-
   // describe('_checkName', () => {
   //   it('should pass', () => {
   //     const queue = new AmqpQueue(amqp, 'my-queue')
@@ -40,9 +35,10 @@ describe('AmqpQueue', () => {
 
   describe('assert', () => {
     it('should pass', async () => {
-      const amqp = <Amqp> {
+      /* eslint-disable @typescript-eslint/consistent-type-assertions */
+      const amqp: Amqp = <Amqp><unknown> {
         channel: <Channel><unknown> {
-          assertQueue: () => (<Bluebird<Replies.AssertQueue>> Promise.resolve(<Replies.AssertQueue>{
+          assertQueue: () => <Bluebird<Replies.AssertQueue>> (Promise.resolve(<Replies.AssertQueue>{
             queue: 'my-queue'
           }))
         }
