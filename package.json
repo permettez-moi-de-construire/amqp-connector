@@ -1,6 +1,6 @@
 {
   "name": "@permettezmoideconstruire/amqp-connector",
-  "version": "2.0.0-7",
+  "version": "2.0.0-8",
   "description": "Thin wrapper around amqplib",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,8 @@
     "build": "tsc -b",
     "test": "mocha -r ts-node/register test/index.ts \"test/**/*.test.ts\"",
     "lint": "eslint --ext .ts .",
-    "prepublish": "yarn lint && yarn test && yarn build"
+    "prepublish": "yarn lint && yarn test",
+    "prepack": "yarn build"
   },
   "dependencies": {
     "amqplib": "^0.5.5"
