@@ -10,7 +10,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:doc": "typedoc --plugin typedoc-plugin-markdown",
     "test": "mocha -r ts-node/register src/test/index.ts \"src/test/**/*.test.ts\"",
     "lint": "eslint --ext .ts ./src",
     "prepublishOnly": "yarn test && yarn build",
@@ -37,8 +36,6 @@
     "mocha": "^7.1.1",
     "snazzy": "^8.0.0",
     "ts-node": "^8.8.2",
-    "typedoc": "^0.17.4",
-    "typedoc-plugin-markdown": "^2.2.17",
     "typescript": "^3.8.3"
   },
   "repository": "git+https://github.com/permettez-moi-de-construire/amqp-connector.git",
