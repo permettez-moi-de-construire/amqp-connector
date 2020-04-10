@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "test": "mocha -r ts-node/register src/test/index.ts \"src/test/**/*.test.ts\"",
+    "test": "mocha -r ts-node/register test/index.ts \"test/**/*.test.ts\"",
     "lint": "eslint --ext .ts .",
     "lint:src": "eslint --ext .ts",
     "lint:test": "eslint --ext .ts",
