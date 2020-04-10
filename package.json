@@ -12,8 +12,6 @@
     "build": "tsc -b",
     "test": "mocha -r ts-node/register test/index.ts \"test/**/*.test.ts\"",
     "lint": "eslint --ext .ts .",
-    "lint:src": "eslint --ext .ts",
-    "lint:test": "eslint --ext .ts",
     "prepublishOnly": "yarn lint && yarn test && yarn build"
   },
   "dependencies": {
