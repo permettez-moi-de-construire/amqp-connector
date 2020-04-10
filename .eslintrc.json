@@ -2,7 +2,7 @@
   "extends": "standard-with-typescript",
   "parserOptions": {
     "project": [
-      "./src/tsconfig.json",
+      "./tsconfig.json",
       "./test/tsconfig.json"
     ]
   },
