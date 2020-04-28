@@ -142,4 +142,9 @@ class Amqp {
 }
 
 export default Amqp
-export { Amqp }
+export {
+  Amqp,
+  AmqpConfig,
+  AmqpQueueAmqpOptions,
+  AmqpExchangeAmqpOptions
+}
