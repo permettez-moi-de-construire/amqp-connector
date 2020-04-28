@@ -1,12 +1,12 @@
 {
   "name": "@permettezmoideconstruire/amqp-connector",
-  "version": "2.0.0-9",
+  "version": "2.0.0-10",
   "description": "Thin wrapper around amqplib",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": "^12.16.1",
-    "yarn": "^1.22.4"
+    "node": "^12",
+    "yarn": "^1"
   },
   "scripts": {
     "build": "tsc -b",
