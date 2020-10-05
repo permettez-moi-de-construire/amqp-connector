@@ -97,7 +97,7 @@ class AmqpQueue {
       ? await new Promise((resolve, reject) => {
         channel.sendToQueue(queueName, data, options,
           (err, ok) => {
-            if (err == null) {
+            if (err != null) {
               return reject(err)
             }
             resolve(ok)

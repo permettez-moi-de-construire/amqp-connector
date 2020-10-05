@@ -105,7 +105,7 @@ class AmqpExchange {
       ? await new Promise((resolve, reject) => {
         channel.publish(exchangeName, routingKey, data, options,
           (err, ok) => {
-            if (err == null) {
+            if (err != null) {
               return reject(err)
             }
             resolve(ok)
