@@ -18,6 +18,8 @@ interface AmqpExchangeOptions extends _AmqpExchangeOptions {
   type?: AmqpExchangeType
 }
 
+type CustomMessageContentSerializer <T> = (content: T) => Buffer
+
 const defaultOptions: AmqpExchangeOptions = {
   durable: true,
   defaultPersistentMessages: true
@@ -165,11 +167,27 @@ class AmqpExchange {
       options
     )
   }
+
+  async sendCustom <T> (
+    routingKey: string,
+    data: T,
+    serializer: CustomMessageContentSerializer<T>,
+    options?: Options.Publish
+  ): Promise<Replies.Empty> {
+    const formattedData = serializer(data)
+
+    return await this.send(
+      routingKey,
+      formattedData,
+      options
+    )
+  }
 }
 
 export default AmqpExchange
 export {
   AmqpExchange,
   AmqpExchangeType,
-  AmqpExchangeOptions
+  AmqpExchangeOptions,
+  CustomMessageContentSerializer
 }

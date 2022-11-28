@@ -11,6 +11,7 @@ import { Buffer } from 'buffer'
 import {
   AmqpUnexpectedReplyToError
 } from './errors'
+import { CustomMessageContentSerializer } from './amqp-exchange'
 
 interface AmqpQueueOptions extends Options.AssertQueue {
   defaultPersistentMessages?: boolean
@@ -25,8 +26,15 @@ interface ConsumeJsonMessage extends Omit<ConsumeMessage, 'content'> {
   content: object
 }
 
+interface ConsumeCustomMessage <T> extends Omit<ConsumeMessage, 'content'> {
+  content: T
+}
+
 type OnMessageCallback = (msg: ConsumeMessage) => any
 type OnJsonMessageCallback = (msg: ConsumeJsonMessage) => any
+type OnCustomMessageCallback <T> = (msg: ConsumeCustomMessage<T>) => any
+
+type CustomMessageContentParser <T> = (rawContent: Buffer) => T
 
 class AmqpQueue {
   readonly amqp: Amqp
@@ -138,6 +146,19 @@ class AmqpQueue {
     )
   }
 
+  async sendCustom <T> (
+    data: T,
+    serializer: CustomMessageContentSerializer<T>,
+    options?: Options.Publish
+  ): Promise<Replies.Empty> {
+    const formattedData = serializer(data)
+
+    return await this.send(
+      formattedData,
+      options
+    )
+  }
+
   async consume (
     callback: OnMessageCallback,
     options: Options.Consume
@@ -179,6 +200,36 @@ class AmqpQueue {
       jsonCallback,
       options
     )
+  }
+
+  async consumeCustom <T> (
+    callback: OnCustomMessageCallback<T>,
+    parser: CustomMessageContentParser<T>,
+    options: Options.Consume
+  ): Promise<Replies.Consume> {
+    const channel = this._getChannel()
+
+    const customCallback = (msg: ConsumeMessage): void => {
+      const parsedContent = parser(msg.content)
+
+      callback.call(channel, {
+        ...msg,
+        content: parsedContent
+      })
+    }
+
+    return await this.consume(
+      customCallback,
+      options
+    )
+  }
+
+  async cancel (
+    ...args: Parameters<Channel['cancel']>
+  ): ReturnType<Channel['cancel']> {
+    const channel = this._getChannel()
+
+    return await channel.cancel(...args)
   }
 
   static _getReplyQueue (
