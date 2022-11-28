@@ -298,6 +298,29 @@ class AmqpQueue {
     )
   }
 
+  static replyCustom = (
+    amqp: Amqp,
+    originMessage: Message,
+    queueOptions?: AmqpQueueOptions
+  ) => async <T> (
+    data: T,
+    serializer: CustomMessageContentSerializer<T>,
+    msgOptions?: Options.Publish
+  ): Promise<Replies.Empty> => {
+    const replyQueue = AmqpQueue._getReplyQueue(amqp, originMessage, queueOptions)
+
+    const { correlationId } = originMessage.properties
+
+    return await replyQueue.sendCustom(
+      data,
+      serializer,
+      {
+        ...msgOptions,
+        correlationId
+      }
+    )
+  }
+
   ack (
     ...args: Parameters<Channel['ack']>
   ): ReturnType<Channel['ack']> {
