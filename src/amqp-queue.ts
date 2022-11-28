@@ -163,7 +163,7 @@ class AmqpQueue {
   async consumeJson (
     callback: OnJsonMessageCallback,
     options: Options.Consume
-  ): Promise<Replies.Empty> {
+  ): Promise<Replies.Consume> {
     const channel = this._getChannel()
 
     const jsonCallback = (msg: ConsumeMessage): void => {
