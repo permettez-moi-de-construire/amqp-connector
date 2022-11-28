@@ -1,6 +1,5 @@
 import { describe, it } from 'mocha'
 // import { assert } from 'chai'
-import Bluebird from 'bluebird'
 
 import AmqpQueue from '../src/amqp-queue'
 import Amqp from '../src/amqp'
@@ -38,7 +37,7 @@ describe('AmqpQueue', () => {
       /* eslint-disable @typescript-eslint/consistent-type-assertions */
       const amqp: Amqp = <Amqp><unknown> {
         channel: <Channel><unknown> {
-          assertQueue: () => <Bluebird<Replies.AssertQueue>> (Promise.resolve(<Replies.AssertQueue>{
+          assertQueue: async () => await (Promise.resolve(<Replies.AssertQueue>{
             queue: 'my-queue'
           }))
         }
