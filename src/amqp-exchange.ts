@@ -94,6 +94,21 @@ class AmqpExchange {
     )
   }
 
+  async unbindQueue (
+    amqpQueue: AmqpQueue,
+    bindingKey: string,
+    options?: any
+  ): Promise<Replies.Empty> {
+    const channel = this._getChannel()
+
+    return await channel.unbindQueue(
+      amqpQueue.name,
+      this.name,
+      bindingKey,
+      options
+    )
+  }
+
   static async _sendAsPromise (
     channel: Channel,
     exchangeName: string,
