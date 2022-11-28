@@ -1,5 +1,4 @@
 import { describe, it } from 'mocha'
-import { assert } from 'chai'
 
 import AmqpQueue from '../src/amqp-queue'
 import Amqp from '../src/amqp'
