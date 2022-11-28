@@ -25,7 +25,6 @@ interface ConsumeJsonMessage extends Omit<ConsumeMessage, 'content'> {
   content: object
 }
 
-type _onMessage = (msg: ConsumeMessage | null) => any
 type OnMessageCallback = (msg: ConsumeMessage) => any
 type OnJsonMessageCallback = (msg: ConsumeJsonMessage) => any
 
