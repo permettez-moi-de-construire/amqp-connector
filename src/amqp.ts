@@ -1,4 +1,4 @@
-import { connect, Connection, Channel, ConfirmChannel } from 'amqplib'
+import { connect, ChannelModel, Channel, ConfirmChannel } from 'amqplib'
 import { AmqpQueue, AmqpQueueOptions } from './amqp-queue'
 import { AmqpExchange, AmqpExchangeOptions } from './amqp-exchange'
 
@@ -23,7 +23,7 @@ interface AmqpExchangeAmqpOptions extends AmqpExchangeOptions {
 }
 
 class Amqp {
-  connection: Connection | null
+  connection: ChannelModel | null
   channel: Channel | null
   readonly exchanges: Record<string, AmqpExchange>
   readonly queues: Record<string, AmqpQueue>
